@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
+
+group 'com.github.socraticphoenix.metaprocessor'
+version '0.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'com.google.auto.service:auto-service:1.0.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0.1'
+}
+
+task ghpagesJavadocs(type: Javadoc) {
+    destinationDir = file("/docs")
+
+    source = sourceSets.main.allJava
+    classpath = configurations.runtimeClasspath
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+
+    classifier("javadoc")
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+
+    classifier("source")
+}
+
+artifacts {
+    archives javadocJar, sourceJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = rootProject.name
+
+            from components.java
+
+            artifact sourceJar
+            artifact javadocJar
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
