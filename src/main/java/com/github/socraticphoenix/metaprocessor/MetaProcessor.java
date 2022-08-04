@@ -39,6 +39,11 @@ public class MetaProcessor extends AbstractProcessor {
 
         log(element, "Modifiers: %s", element.getModifiers());
         report(element, element.asType());
+
+        element.getEnclosedElements().forEach(enclosed -> {
+            log(element, "Enclosed element: " + enclosed.getSimpleName());
+            report(enclosed);
+        });
     }
 
     private void report(Element element, TypeMirror type) {
